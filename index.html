@@ -1,0 +1,415 @@
+<!doctype html>
+<html lang="en" class="h-full">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lawkaz Coffee World</title>
+  <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+  <script src="https://cdn.jsdelivr.net/npm/lucide@0.263.0/dist/umd/lucide.min.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Cormorant+Garamond:wght@300;400;600&display=swap" rel="stylesheet">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            gold: '#2E7D32',
+            darkbg: '#0a0a0a',
+            card: '#141414',
+            accent: '#2E7D32',
+            surface: '#1a1a1a'
+          },
+          fontFamily: {
+            display: ['Playfair Display', 'serif'],
+            body: ['Cormorant Garamond', 'serif']
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    html, body { height: 100%; margin: 0; }
+    .app-wrapper { height: 100%; overflow-y: auto; overflow-x: hidden; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes slideInLeft { from { opacity: 0; transform: translateX(-50px); } to { opacity: 1; transform: translateX(0); } }
+    @keyframes slideInRight { from { opacity: 0; transform: translateX(50px); } to { opacity: 1; transform: translateX(0); } }
+    @keyframes scaleIn { from { opacity: 0; transform: scale(0.8); } to { opacity: 1; transform: scale(1); } }
+    @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+    @keyframes pulse-glow { 0%, 100% { box-shadow: 0 0 20px rgba(46,125,50,0.3); } 50% { box-shadow: 0 0 40px rgba(46,125,50,0.6); } }
+    .animate-fade { animation: fadeIn 0.8s ease forwards; }
+    .animate-slide-left { animation: slideInLeft 0.8s ease forwards; }
+    .animate-slide-right { animation: slideInRight 0.8s ease forwards; }
+    .animate-scale { animation: scaleIn 0.6s ease forwards; }
+    .animate-float { animation: float 3s ease-in-out infinite; }
+    .animate-glow { animation: pulse-glow 2s ease-in-out infinite; }
+    .delay-1 { animation-delay: 0.1s; } .delay-2 { animation-delay: 0.2s; }
+    .delay-3 { animation-delay: 0.3s; } .delay-4 { animation-delay: 0.4s; }
+    .luxury-frame {
+      border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%;
+      border: 3px solid #2E7D32; padding: 4px; transition: all 0.5s ease;
+    }
+    .luxury-frame:hover {
+      border-radius: 70% 30% 30% 70% / 70% 70% 30% 30%;
+      box-shadow: 0 0 30px rgba(46,125,50,0.4);
+    }
+    .btn-luxury {
+      background: linear-gradient(135deg, #2E7D32, #1b5e20);
+      transition: all 0.3s ease; position: relative; overflow: hidden;
+    }
+    .btn-luxury::before {
+      content: ''; position: absolute; top: 0; left: -100%; width: 100%; height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+      transition: left 0.5s;
+    }
+    .btn-luxury:hover::before { left: 100%; }
+    .btn-luxury:hover { transform: translateY(-3px); box-shadow: 0 10px 30px rgba(46,125,50,0.4); }
+    .card-hover { transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1); }
+    .card-hover:hover { transform: translateY(-8px) scale(1.02); box-shadow: 0 20px 60px rgba(46,125,50,0.15); }
+    .hero-bg { transition: opacity 1.5s ease-in-out; position: absolute; inset: 0; }
+    .nav-link { position: relative; }
+    .nav-link::after { content: ''; position: absolute; bottom: -4px; left: 0; width: 0; height: 2px; background: #2E7D32; transition: width 0.3s; }
+    .nav-link:hover::after { width: 100%; }
+    .icon-btn { transition: all 0.3s ease; }
+    .icon-btn:hover { color: #2E7D32; transform: scale(1.2); }
+    .menu-overlay { transition: all 0.4s ease; }
+    .category-card { position: relative; overflow: hidden; }
+    .category-card::before { content: ''; position: absolute; inset: 0; background: linear-gradient(135deg, rgba(46,125,50,0.1), transparent); opacity: 0; transition: opacity 0.4s; }
+    .category-card:hover::before { opacity: 1; }
+    .wa-fab { position: fixed; bottom: 28px; right: 28px; width: 52px; height: 52px; background: #25D366; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 26px; cursor: pointer; box-shadow: 0 4px 20px rgba(37,211,102,.4); z-index: 999; transition: .2s; text-decoration: none; }
+    .wa-fab:hover { transform: scale(1.1); }
+  </style>
+</head>
+<body class="h-full bg-darkbg text-white font-body">
+<div class="app-wrapper w-full" id="app">
+
+  <!-- Navigation -->
+  <nav class="fixed top-0 left-0 right-0 z-50 bg-darkbg/95 backdrop-blur-md border-b border-surface">
+    <div class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-full bg-accent flex items-center justify-center animate-glow">
+          <i data-lucide="leaf" class="w-5 h-5 text-black"></i>
+        </div>
+        <div>
+          <span class="font-display font-bold text-xl tracking-wide block leading-tight">LAWKAZ</span>
+          <span class="text-accent text-xs tracking-[0.2em] uppercase">Coffee World</span>
+        </div>
+      </div>
+      <div class="hidden md:flex items-center gap-8">
+        <a href="#home" class="nav-link text-sm uppercase tracking-widest hover:text-accent">Home</a>
+        <a href="#about" class="nav-link text-sm uppercase tracking-widest hover:text-accent">About</a>
+        <a href="#products" class="nav-link text-sm uppercase tracking-widest hover:text-accent">Products</a>
+        <a href="#contact" class="nav-link text-sm uppercase tracking-widest hover:text-accent">Contact</a>
+      </div>
+      <div class="hidden md:flex items-center gap-5">
+        <button class="icon-btn" title="Cart"><i data-lucide="shopping-cart" class="w-5 h-5"></i></button>
+        <button class="icon-btn" title="Profile"><i data-lucide="user" class="w-5 h-5"></i></button>
+      </div>
+      <button class="md:hidden icon-btn" id="menu-toggle">
+        <i data-lucide="menu" class="w-6 h-6"></i>
+      </button>
+    </div>
+  </nav>
+
+  <!-- Mobile Menu -->
+  <div id="mobile-menu" class="menu-overlay fixed inset-0 z-40 bg-darkbg/98 flex flex-col items-center justify-center gap-8 opacity-0 pointer-events-none">
+    <button id="menu-close" class="absolute top-6 right-6 icon-btn"><i data-lucide="x" class="w-7 h-7"></i></button>
+    <a href="#home" class="text-2xl font-display hover:text-accent transition-colors">Home</a>
+    <a href="#about" class="text-2xl font-display hover:text-accent transition-colors">About</a>
+    <a href="#products" class="text-2xl font-display hover:text-accent transition-colors">Products</a>
+    <a href="#contact" class="text-2xl font-display hover:text-accent transition-colors">Contact</a>
+  </div>
+
+  <!-- Hero -->
+  <section id="home" class="relative w-full" style="min-height: 100vh;">
+    <div class="hero-bg" id="hero-bg-1" style="background: url('file:///sdcard/Download/cocoparisienne-coffee-2714970.jpg') center/cover no-repeat;"></div>
+    <div class="hero-bg" id="hero-bg-2" style="background: linear-gradient(135deg, #0d2e1a 0%, #0a0a0a 50%, #1a1a1a 100%); opacity: 0;"></div>
+    <div class="hero-bg" id="hero-bg-3" style="background: linear-gradient(135deg, #1a1a1a 0%, #0d2e1a 50%, #0a0a0a 100%); opacity: 0;"></div>
+    <div class="absolute top-20 right-20 w-64 h-64 rounded-full border border-accent/20 animate-float opacity-30"></div>
+    <div class="absolute bottom-32 left-16 w-40 h-40 rounded-full border border-accent/10 animate-float" style="animation-delay: 1s;"></div>
+    <div class="relative z-10 min-h-screen flex items-center">
+      <div class="max-w-7xl mx-auto px-6 w-full flex flex-col lg:flex-row items-center gap-12 pt-24 pb-16">
+        <div class="flex-1 opacity-0 animate-slide-left">
+          <p class="text-accent uppercase tracking-[0.3em] text-sm mb-4">100% Certified Organic</p>
+          <h1 class="font-display font-black text-5xl lg:text-7xl leading-tight mb-6">
+            Energy<br><span class="text-accent">Through Nature</span>
+          </h1>
+          <p class="text-gray-400 text-lg max-w-md mb-8 leading-relaxed">
+            We offer one of the most thorough selections of certified organic herbs, spices, and botanical products — committed to responsible sourcing and your total well-being.
+          </p>
+          <div class="flex gap-4 flex-wrap">
+            <button class="btn-luxury px-8 py-4 rounded-full text-white font-bold uppercase tracking-wider text-sm">Shop Now</button>
+            <button class="px-8 py-4 rounded-full border border-accent/50 text-accent hover:bg-accent/10 transition-all text-sm uppercase tracking-wider">Learn More</button>
+          </div>
+        </div>
+        <div class="flex-1 flex justify-center opacity-0 animate-slide-right delay-2">
+          <div class="luxury-frame w-72 h-72 lg:w-96 lg:h-96 flex items-center justify-center bg-surface">
+            <div class="text-center">
+              <i data-lucide="coffee" class="w-20 h-20 text-accent mx-auto mb-4 animate-float"></i>
+              <p class="font-display text-2xl text-accent">Lawkaz</p>
+              <p class="text-gray-500 text-sm tracking-widest">COFFEE WORLD</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Slide dots -->
+    <div class="absolute bottom-8 left-1/2 -translate-x-1/2 flex gap-3 z-10">
+      <div class="dot w-6 h-2 rounded-full bg-accent cursor-pointer" onclick="goToSlide(0)"></div>
+      <div class="dot w-2 h-2 rounded-full bg-gray-600 cursor-pointer" onclick="goToSlide(1)"></div>
+      <div class="dot w-2 h-2 rounded-full bg-gray-600 cursor-pointer" onclick="goToSlide(2)"></div>
+    </div>
+  </section>
+
+  <!-- Why Choose Us -->
+  <section class="w-full py-24 px-6 bg-darkbg">
+    <div class="max-w-7xl mx-auto">
+      <div class="text-center mb-16">
+        <p class="text-accent uppercase tracking-[0.3em] text-sm mb-3">Our Promise</p>
+        <h2 class="font-display text-4xl lg:text-5xl font-bold">Why Choose Us?</h2>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div class="category-card card-hover bg-surface rounded-2xl p-8 text-center border border-surface hover:border-accent/30 opacity-0 animate-scale delay-1">
+          <div class="luxury-frame w-20 h-20 mx-auto mb-6 flex items-center justify-center bg-card">
+            <i data-lucide="heart" class="w-9 h-9 text-accent"></i>
+          </div>
+          <h3 class="font-display text-xl mb-3">Customer First</h3>
+          <p class="text-gray-500 text-sm leading-relaxed">Your health is our priority. We only offer high-quality products that are clinically tested and proven effective.</p>
+        </div>
+        <div class="category-card card-hover bg-surface rounded-2xl p-8 text-center border border-surface hover:border-accent/30 opacity-0 animate-scale delay-2">
+          <div class="luxury-frame w-20 h-20 mx-auto mb-6 flex items-center justify-center bg-card">
+            <i data-lucide="trending-up" class="w-9 h-9 text-accent"></i>
+          </div>
+          <h3 class="font-display text-xl mb-3">Career Opportunities</h3>
+          <p class="text-gray-500 text-sm leading-relaxed">Our business model builds strong, stable networks among members while nurturing achievers and successful leaders.</p>
+        </div>
+        <div class="category-card card-hover bg-surface rounded-2xl p-8 text-center border border-surface hover:border-accent/30 opacity-0 animate-scale delay-3">
+          <div class="luxury-frame w-20 h-20 mx-auto mb-6 flex items-center justify-center bg-card">
+            <i data-lucide="star" class="w-9 h-9 text-accent"></i>
+          </div>
+          <h3 class="font-display text-xl mb-3">Premium Quality</h3>
+          <p class="text-gray-500 text-sm leading-relaxed">Every blend is infused with natural ingredients, carefully selected to promote health benefits and solve real challenges.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- About -->
+  <section id="about" class="w-full py-24 px-6 bg-card">
+    <div class="max-w-7xl mx-auto flex flex-col lg:flex-row items-center gap-16">
+      <div class="flex-1 opacity-0 animate-slide-left">
+        <div class="luxury-frame w-80 h-80 mx-auto flex items-center justify-center bg-surface">
+          <div class="text-center p-8">
+            <i data-lucide="award" class="w-16 h-16 text-accent mx-auto mb-4"></i>
+            <p class="font-display text-xl text-accent">Est. 2024</p>
+            <p class="text-gray-500 mt-2">Abuja, Nigeria</p>
+          </div>
+        </div>
+      </div>
+      <div class="flex-1 opacity-0 animate-slide-right">
+        <p class="text-accent uppercase tracking-[0.3em] text-sm mb-3">Our Story</p>
+        <h2 class="font-display text-4xl font-bold mb-6">About Lawkaz Coffee World</h2>
+        <p class="text-gray-400 leading-relaxed mb-6">
+          Lawkaz Coffee World is a specialty coffee company dedicated to crafting functional coffee products that don't just delight the taste buds — they promote overall well-being.
+        </p>
+        <p class="text-gray-500 leading-relaxed">
+          Our expertly roasted coffee blends are infused with natural ingredients, carefully selected to promote numerous health benefits and solve everyday challenges. From energy and immunity to vitality and focus — we brew with purpose.
+        </p>
+        <button class="btn-luxury mt-8 px-8 py-3 rounded-full text-white font-bold text-sm uppercase tracking-wider">Read More</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Products -->
+  <section id="products" class="w-full py-24 px-6 bg-darkbg">
+    <div class="max-w-7xl mx-auto">
+      <div class="text-center mb-16">
+        <p class="text-accent uppercase tracking-[0.3em] text-sm mb-3">What We Offer</p>
+        <h2 class="font-display text-4xl lg:text-5xl font-bold">Our Products</h2>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <!-- Coffee 29 Plus -->
+        <div class="card-hover bg-surface rounded-2xl overflow-hidden border border-surface hover:border-accent/30 opacity-0 animate-scale delay-1">
+          <div class="h-48 bg-card flex items-center justify-center">
+            <i data-lucide="coffee" class="w-20 h-20 text-accent animate-float"></i>
+          </div>
+          <div class="p-6">
+            <h3 class="font-display text-2xl mb-3">Coffee 29 Plus</h3>
+            <ul class="text-gray-500 text-sm space-y-1 mb-5">
+             <li class="flex items-center gap-2">
+  <i data-lucide="check-circle" class="w-4 h-4 text-accent flex-shrink-0"></i>
+    Promotes physical & mental health
+  </li>
+              <li class="flex items-center gap-2">
+  <i data-lucide="check-circle" class="w-4 h-4 text-accent flex-shrink-0"></i>
+  Lowers blood cholesterol</li>
+              <li class="flex items-center gap-2">
+  <i data-lucide="check-circle" class="w-4 h-4 text-accent flex-shrink-0"></i> Improves blood circulation</li>
+              <li class="flex items-center gap-2">
+  <i data-lucide="check-circle" class="w-4 h-4 text-accent flex-shrink-0"></i>Enhances immunity & energy</li>
+              <li class="flex items-center gap-2">
+  <i data-lucide="check-circle" class="w-4 h-4 text-accent flex-shrink-0"></i>Strengthens male reproductive organs</li>
+            </ul>
+            <button class="btn-luxury w-full py-3 rounded-xl text-white font-bold text-sm uppercase tracking-wider">Order Now</button>
+          </div>
+        </div>
+        <!-- Topmen Special Cocoa -->
+        <div class="card-hover bg-surface rounded-2xl overflow-hidden border border-surface hover:border-accent/30 opacity-0 animate-scale delay-2">
+          <div class="h-48 bg-card flex items-center justify-center">
+            <i data-lucide="zap" class="w-20 h-20 text-accent animate-float" style="animation-delay:.5s"></i>
+          </div>
+          <div class="p-6">
+            <h3 class="font-display text-2xl mb-3">Topmen Special Cocoa</h3>
+            <ul class="text-gray-500 text-sm space-y-1 mb-5">
+              <li class="flex items-center gap-2">
+  <i data-lucide="check-circle" class="w-4 h-4 text-accent flex-shrink-0"></i>Good for prostate health</li>
+              <li class="flex items-center gap-2">
+  <i data-lucide="check-circle" class="w-4 h-4 text-accent flex-shrink-0"></i>
+         Helps reduce risk of diabetes</li>
+              <li class="flex items-center gap-2">
+  <i data-lucide="check-circle" class="w-4 h-4 text-accent flex-shrink-0"></i>Improves libido & testosterone</li>
+              <li class="flex items-center gap-2">
+  <i data-lucide="check-circle" class="w-4 h-4 text-accent flex-shrink-0"></i>Boosts cardiovascular health</li>
+              <li class="flex items-center gap-2">
+  <i data-lucide="check-circle" class="w-4 h-4 text-accent flex-shrink-0"></i>Anti-cancer & anti-inflammatory</li>
+            </ul>
+            <button class="btn-luxury w-full py-3 rounded-xl text-white font-bold text-sm uppercase tracking-wider">Order Now</button>
+          </div>
+        </div>
+        <!-- Maca Boost Coffee -->
+        <div class="card-hover bg-surface rounded-2xl overflow-hidden border border-surface hover:border-accent/30 opacity-0 animate-scale delay-3">
+          <div class="h-48 bg-card flex items-center justify-center">
+            <i data-lucide="leaf" class="w-20 h-20 text-accent animate-float" style="animation-delay:1s"></i>
+          </div>
+          <div class="p-6">
+            <h3 class="font-display text-2xl mb-3">Maca Boost Coffee</h3>
+            <ul class="text-gray-500 text-sm space-y-1 mb-5">
+              <li class="flex items-center gap-2">
+  <i data-lucide="check-circle" class="w-4 h-4 text-accent flex-shrink-0"></i>Increases sperm count & vitality</li>
+              <li class="flex items-center gap-2">
+  <i data-lucide="check-circle" class="w-4 h-4 text-accent flex-shrink-0"></i>Boosts energy & endurance</li>
+              <li class="flex items-center gap-2">
+  <i data-lucide="check-circle" class="w-4 h-4 text-accent flex-shrink-0"></i>Reduces erectile dysfunction</li>
+              <li class="flex items-center gap-2">
+  <i data-lucide="check-circle" class="w-4 h-4 text-accent flex-shrink-0"></i> Regulates sugar levels</li>
+              <li class="flex items-center gap-2">
+  <i data-lucide="check-circle" class="w-4 h-4 text-accent flex-shrink-0"></i>Helps correct hormonal imbalance</li>
+            </ul>
+            <button class="btn-luxury w-full py-3 rounded-xl text-white font-bold text-sm uppercase tracking-wider">Order Now</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Contact -->
+  <section id="contact" class="w-full py-24 px-6 bg-card">
+    <div class="max-w-7xl mx-auto">
+      <div class="text-center mb-12">
+        <p class="text-accent uppercase tracking-[0.3em] text-sm mb-3">Get In Touch</p>
+        <h2 class="font-display text-4xl font-bold">Contact Us</h2>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-5xl mx-auto">
+        <div class="card-hover text-center p-6 bg-surface rounded-2xl border border-surface hover:border-accent/30">
+          <i data-lucide="phone" class="w-8 h-8 text-accent mx-auto mb-3"></i>
+          <p class="text-xs text-gray-500 mb-1 uppercase tracking-wider">Phone</p>
+          <p class="text-gray-300 text-sm">+234 905 861 1115</p>
+        </div>
+        <div class="card-hover text-center p-6 bg-surface rounded-2xl border border-surface hover:border-accent/30">
+          <i data-lucide="mail" class="w-8 h-8 text-accent mx-auto mb-3"></i>
+          <p class="text-xs text-gray-500 mb-1 uppercase tracking-wider">Email</p>
+          <p class="text-gray-300 text-sm">lawkaznig@gmail.com</p>
+        </div>
+        <div class="card-hover text-center p-6 bg-surface rounded-2xl border border-surface hover:border-accent/30">
+          <i data-lucide="map-pin" class="w-8 h-8 text-accent mx-auto mb-3"></i>
+          <p class="text-xs text-gray-500 mb-1 uppercase tracking-wider">Address</p>
+          <p class="text-gray-300 text-sm">No F11a First Floor Alibro Atrium Plaza, Utako, Abuja</p>
+        </div>
+        <div class="card-hover text-center p-6 bg-surface rounded-2xl border border-surface hover:border-accent/30">
+          <i data-lucide="clock" class="w-8 h-8 text-accent mx-auto mb-3"></i>
+          <p class="text-xs text-gray-500 mb-1 uppercase tracking-wider">Working Hours</p>
+          <p class="text-gray-300 text-sm">9:00 AM – 6:00 PM</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="w-full py-12 px-6 bg-darkbg border-t border-surface">
+    <div class="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6">
+      <div class="flex items-center gap-3">
+        <div class="w-8 h-8 rounded-full bg-accent flex items-center justify-center">
+          <i data-lucide="leaf" class="w-4 h-4 text-black"></i>
+        </div>
+        <span class="font-display font-bold">LAWKAZ COFFEE WORLD</span>
+      </div>
+      <div class="flex items-center gap-6">
+        <a href="#" class="icon-btn" title="Instagram"><i data-lucide="instagram" class="w-5 h-5"></i></a>
+        <a href="#" class="icon-btn" title="Twitter/X"><i data-lucide="twitter" class="w-5 h-5"></i></a>
+        <a href="#" class="icon-btn" title="Facebook"><i data-lucide="facebook" class="w-5 h-5"></i></a>
+        <a href="#" class="icon-btn" title="YouTube"><i data-lucide="youtube" class="w-5 h-5"></i></a>
+        <a href="https://wa.me/2349058611115" class="icon-btn" title="WhatsApp"><i data-lucide="message-circle" class="w-5 h-5"></i></a>
+      </div>
+      <p class="text-gray-600 text-sm">© 2025 Lawkaz Coffee World. All rights reserved.</p>
+    </div>
+  </footer>
+
+</div>
+
+<!-- WhatsApp FAB -->
+<a href="https://wa.me/2349058611115" class="wa-fab" title="Chat on WhatsApp">💬</a>
+
+<script>
+  lucide.createIcons();
+
+  // Mobile menu
+  const menuToggle = document.getElementById('menu-toggle');
+  const mobileMenu = document.getElementById('mobile-menu');
+  const menuClose = document.getElementById('menu-close');
+  menuToggle.addEventListener('click', () => {
+    mobileMenu.classList.toggle('opacity-0');
+    mobileMenu.classList.toggle('pointer-events-none');
+  });
+  menuClose.addEventListener('click', () => {
+    mobileMenu.classList.add('opacity-0', 'pointer-events-none');
+  });
+  mobileMenu.querySelectorAll('a').forEach(a => {
+    a.addEventListener('click', () => mobileMenu.classList.add('opacity-0', 'pointer-events-none'));
+  });
+
+  // Hero auto-slide
+  let currentBg = 0;
+  const bgs = [
+    document.getElementById('hero-bg-1'),
+    document.getElementById('hero-bg-2'),
+    document.getElementById('hero-bg-3')
+  ];
+  const dots = document.querySelectorAll('.dot');
+
+  function goToSlide(n) {
+    bgs[currentBg].style.opacity = '0';
+    dots[currentBg].style.width = '8px';
+    dots[currentBg].style.background = '#4b5563';
+    currentBg = n;
+    bgs[currentBg].style.opacity = '1';
+    dots[currentBg].style.width = '24px';
+    dots[currentBg].style.background = '#2E7D32';
+  }
+
+  setInterval(() => goToSlide((currentBg + 1) % bgs.length), 4500);
+
+  // Scroll reveal
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.style.opacity = '1';
+        e.target.style.transform = 'none';
+      }
+    });
+  }, { threshold: 0.1 });
+
+  document.querySelectorAll('.animate-scale, .animate-fade').forEach(el => {
+    el.style.opacity = '0';
+    observer.observe(el);
+  });
+</script>
+</body>
+</html>
